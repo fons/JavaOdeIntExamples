@@ -11,7 +11,6 @@
 	<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	<bridj.version>0.7.1-SNAPSHOT</bridj.version>
     </properties>
-
     <dependencies>
 	    <dependency>
 		<groupId>com.nativelibs4java</groupId>
@@ -22,9 +21,38 @@
                 <groupId>com.kabouterlabs</groupId>
                 <artifactId>JavaOdeInt</artifactId>
                 <version>DEV-SNAPSHOT</version>
-                <scope>system</scope>
-                <systemPath>${project.basedir}/src/main/resources/JavaOdeInt-DEV-SNAPSHOT-osx-x86_64.jar</systemPath>
             </dependency>
     </dependencies>
-    
+    <build>
+        <plugins>
+            <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-assembly-plugin</artifactId>
+		<version>2.4.1</version>
+		<configuration>
+		    <!-- get all project dependencies -->
+		    <descriptorRefs>
+			<descriptorRef>jar-with-dependencies</descriptorRef>
+		    </descriptorRefs>
+		    <!-- MainClass in mainfest make a executable jar -->
+		    <archive>
+			<manifest>
+			    <mainClass>Main</mainClass>
+			</manifest>
+		    </archive>
+                    
+		</configuration>
+		<executions>
+		    <execution>
+			<id>make-assembly</id>
+                        <!-- bind to the packaging phase -->
+			<phase>package</phase>
+			<goals>
+			    <goal>single</goal>
+			</goals>
+		    </execution>
+		</executions>
+	    </plugin>
+        </plugins>
+    </build>
 </project>

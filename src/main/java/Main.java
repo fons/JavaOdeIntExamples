@@ -2,19 +2,19 @@
 public class Main {
 
     public static void main(String[] args) {
-        //LogisticGrowthExample.run();
+        LogisticGrowthExample.run();
 
         //lorenz model
-        //LorentzModel.run();
+        LorentzModel.run();
 
         // rigid body
-        //RigidBody.run();
+        RigidBody.run();
 
         // arenstorf orbits
-        //Arenstorf.run();
+        Arenstorf.run();
 
         // vanderpol
-        //VanderPol.run();
+        VanderPol.run();
 
         System.out.println("Hello World!");
     }
