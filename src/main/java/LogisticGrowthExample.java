@@ -19,8 +19,8 @@ public class LogisticGrowthExample {
             }});
         double[] init = new double[1];
         init[0] = 2;
-        t1.exec("sodar-logistic-1.csv",init, t0, tf, delta);
+        t1.exec("sodar-logistic-1.txt",init, t0, tf, delta);
         init[0] = 12;
-        t1.exec("sodar-logistic-2.csv",init, t0, tf, delta);
+        t1.exec("sodar-logistic-2.txt",init, t0, tf, delta);
     }
 }
