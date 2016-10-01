@@ -4,7 +4,7 @@
 public class LorentzModel {
     static public void run() {
         double t0    = 0.0;
-        double tf    = 10.0;
+        double tf    = 100.0;
         double delta = 0.01;
         int neq = 3;
 

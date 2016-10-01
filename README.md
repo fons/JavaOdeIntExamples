@@ -31,5 +31,17 @@ Typical out put:
 
 The output data can be found in the ./data sub-directoy.
 
+###Arenstorf orbits
 
 ![arenstorf orbit](/images/arenstorf-1.png)
+
+###VanderPol
+
+![vanderpol ](/images/vanderpol.png)
+
+###Lorentz Attractor
+![lorentz xy](/images/lorentz-1.png)
+
+![lorentz yz](/images/lorentz-2.png)
+
+![lorentz 3d](/images/lorentz-3.png)
