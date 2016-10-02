@@ -12,9 +12,9 @@ public class RigidBody {
             private double I1 = 0.5;
             private double I2 = 2.0;
             private double I3 = 3.0;
-            private double f0 = (I2 - I3)/I1;
-            private double f1 = (I3 - I1)/I2;
-            private double f2 = (I1 - I2)/I3;
+            private double f0 = -2.0;//(I2 - I3)/I1;
+            private double f1 = 1.25; //(I3 - I1)/I2;
+            private double f2 = -0.5; //(I1 - I2)/I3;
             @Override
             public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
                 qdot[0] = f0 * q[1] * q[2];

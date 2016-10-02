@@ -1,5 +1,6 @@
 #Overview
 
+Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) package.
 
 
 #Building
@@ -31,7 +32,10 @@ Typical out put:
 
 The output data can be found in the ./data sub-directoy.
 
+
 ###Arenstorf orbits
+
+&m 
 
 ![arenstorf orbit](/images/arenstorf-1.png)
 
@@ -40,8 +44,12 @@ The output data can be found in the ./data sub-directoy.
 ![vanderpol ](/images/vanderpol.png)
 
 ###Lorentz Attractor
-![lorentz xy](/images/lorentz-1.png)
+X' = -8/3X + Y\*Z
 
-![lorentz yz](/images/lorentz-2.png)
+Y' = -10\*(Y-Z)
+
+Z' = - X\*Y + 28\*Y-Z
+
+Initial conditions : X=Y=Z=1
 
 ![lorentz 3d](/images/lorentz-3.png)

@@ -31,7 +31,7 @@ public class PrintStack {
         return p + File.separator + fn;
     }
     static Pointer<Double> create(double t0, double tf, double dt, int neq) {
-        int size = (int) ((tf - t0) / dt) + 2;
+        int size = (int) ((tf - t0) / dt) + 1;
         double[] p = new double[size * (neq + 1)];
         return Pointer.pointerToDoubles(p);
     }
@@ -39,7 +39,7 @@ public class PrintStack {
     static void print(Pointer<Double> stack, double t0, double tf, double dt, int neq, String fn)
     {
 
-        int size = (int) ((tf - t0) / dt) + 2;
+        int size = (int) ((tf - t0) / dt) + 1;
         int stack_size = size * (neq + 1);
         try {
             PrintWriter writer1 = new PrintWriter(path(fn), "UTF-8");
