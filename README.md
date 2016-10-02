@@ -2,16 +2,39 @@
 
 Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) package.
 
+## Basic Interface
+
+The basic interface is requires  smallest set of parameters to run the underlying Fortran function. It provides an easy way to start using the various ode packages.
+
+## Example : lsoda_basic
+
+lsoda_basic calls dlsoda, which is part of odepack. This routine switches automatically between stiff and -non-stiff methods and this makes it a great choice. 
+
+lsoda\_basic  can be found in the Java package _com.kabouterlabs.jodeint.codepack.CodepackLibrary_. The Java library uses [bridj](https://github.com/nativelibs4java/BridJ) to interface with a C libbary which implements the main integration loop. 
+
+SodaBasic.java implements a simple class and portians are shown discussed below
+
+
+
     import com.kabouterlabs.jodeint.codepack.CodepackLibrary;
     import org.bridj.Pointer;
     
+These two imports bring bridj and Codepack in scope. bridj will be used to manage the interop memory allocation and pointers.
+
     class ExecFunc {
+    
+        //OdeFunc implements the Java code facing interface of the Ode solver.
+        //
         OdeFunc function;
         double[] params;
-        ExecFunc(OdeFunc f) {
-            function = f;
-        }
-    
+        [....]
+
+This is the callback function used by the C and Fortran code to solve the ODE.
+<br>Pointer is part of bridj.
+<br>neq : the dimension of the ode.
+<br>t_ : independent variable (usually time)
+<br>q and qdot are arrays containing the values of the dependent variable and its derivative
+        
         Pointer<CodepackLibrary.codepack_ode_func> f_func () {
             CodepackLibrary.codepack_ode_func f = new CodepackLibrary.codepack_ode_func() {
     
@@ -19,30 +42,28 @@ Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) pack
                 public void apply(Pointer<Integer> neq, Pointer<Double> t_, Pointer<Double> q, Pointer<Double> qdot) {
                     double[] qdot_ = qdot.getDoubles(neq.getInt());
                     double[] q_    = q.getDoubles(neq.getInt());
+Here is where the variables are unwrapped and passed on to the Java ode ßfunction.
+
                     function.apply(neq.getInt(), t_.get(),q_, qdot_, params);
+      
                     qdot.setDoubles(qdot_);
                     q.setDoubles(q_);
     
                 }
             };
+           
             return org.bridj.Pointer.getPointer(f);
         }
     };
     
+  
+   ExecFunc handles the call back function.
+  
     public class SodaBasic {
     
     
-        private Pointer<Double> qq;
-        private int dimension;
-        private ExecFunc ff;
-    
-        SodaBasic(int d, OdeFunc func){
-            dimension = d;
-            ff = new ExecFunc(func);
-            double[] initial_conditions = new double[d];
-            qq = Pointer.pointerToDoubles(initial_conditions);
-        }
-    
+       [..]
+           
         public void exec(String fn, double[] init, double start, double end, double delta) {
     
             int index = 0;
@@ -50,18 +71,11 @@ Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) pack
                 qq.set(index, value);
                 index++;
             }
+lsoda_basic writes the results of each integration step into a stack
+            
             Pointer<Double> stack = PrintStack.create(start,end,delta, dimension);
-            CodepackLibrary.lsoda_basic(stack, qq,ff.f_func(),dimension,start, end, delta);
-            PrintStack.print(stack, start,end,delta,dimension,fn);
-        }
-    
-    
-        public void exec(String fn, double[] params, double[] init, double start, double end, double delta) {
-            ff.params = params;
-            exec(fn,init,start,end,delta);
-        }
-    
-    }
+            CodepackLibrary.lsoda_basic(stack, qq,ff.f_func(),dimension,start, end, delta);[...]
+          }
     
 
 #Building
