@@ -35,7 +35,17 @@ The output data can be found in the ./data sub-directoy.
 
 ###Arenstorf orbits
 
-&m 
+mu1 = m1/(m1 + m2)
+
+mu2 = 1 - mu1
+ 
+y1'' = y1 + 2 \* y2' - mu2 (y1 + mu1)/D1 - mu1 (y1-mu2)/D2
+
+y2'' = y2 - 2 \* y1' - mu2 y2/D1 - mu1 y2/D2
+
+D1 = ((y1+mu1)^2 + y2^2)^(3/2)
+
+D2 = ((y1-mu2)^2 + y2^2)^(3/2)
 
 ![arenstorf orbit](/images/arenstorf-1.png)
 
