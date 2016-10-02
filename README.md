@@ -35,21 +35,24 @@ The output data can be found in the ./data sub-directoy.
 
 ###Arenstorf orbits
 
-mu1 = m1/(m1 + m2)
+&mu;<sub>1</sub> = m<sub>1</sub>/(m<sub>1</sub> + m<sub>2</sub>)
 
-mu2 = 1 - mu1
+&mu;<sub>2</sub> = 1 - &mu;<sub>1</sub>
  
-y1'' = y1 + 2 \* y2' - mu2 (y1 + mu1)/D1 - mu1 (y1-mu2)/D2
+y<sub>1</sub>'' = y<sub>1</sub> + 2 \* y<sub>2</sub>' - &mu;<sub>2</sub> (y<sub>1</sub> + &mu;<sub>1</sub>)/D<sub>1</sub> - &mu;<sub>1</sub> (y<sub>1</sub>-&mu;<sub>2</sub>)/D<sub>2</sub>
 
-y2'' = y2 - 2 \* y1' - mu2 y2/D1 - mu1 y2/D2
+y<sub>2</sub>'' = y<sub>2</sub> - 2 \* y<sub>1</sub>' - &mu;<sub>2</sub> y<sub>2</sub>/D<sub>1</sub> - &mu;<sub>1</sub> y<sub>2</sub>/D<sub>2</sub>
 
-D1 = ((y1+mu1)^2 + y2^2)^(3/2)
+D<sub>1</sub> = ((y<sub>1</sub>+&mu;<sub>1</sub>)^2 + y<sub>2</sub>^2)^(3/2)
 
-D2 = ((y1-mu2)^2 + y2^2)^(3/2)
+D<sub>2</sub> = ((y<sub>1</sub>-&mu;<sub>2</sub>)^2 + y<sub>2</sub>^2)^(3/2)
 
 ![arenstorf orbit](/images/arenstorf-1.png)
 
 ###VanderPol
+
+y'' - &mu; (1-y^2) &times; y' + y
+
 
 ![vanderpol ](/images/vanderpol.png)
 
