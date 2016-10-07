@@ -12,7 +12,7 @@ lsoda_basic calls dlsoda, which is part of odepack. This routine switches automa
 
 lsoda\_basic  can be found in the Java package _com.kabouterlabs.jodeint.codepack.CodepackLibrary_. The Java library uses [bridj](https://github.com/nativelibs4java/BridJ) to interface with a C libbary which implements the main integration loop. 
 
-SodaBasic.java implements a simple class and portians are shown discussed below
+JavaOdeIntExamples.SodaBasic.java implements a simple class and portians are shown discussed below
 
 
 
@@ -21,11 +21,11 @@ SodaBasic.java implements a simple class and portians are shown discussed below
     
 These two imports bring bridj and Codepack in scope. bridj will be used to manage the interop memory allocation and pointers.
 
-    class ExecFunc {
+    class JavaOdeIntExamples.ExecFunc {
     
-        //OdeFunc implements the Java code facing interface of the Ode solver.
+        //JavaOdeIntExamples.OdeFunc implements the Java code facing interface of the Ode solver.
         //
-        OdeFunc function;
+        JavaOdeIntExamples.OdeFunc function;
         double[] params;
         [....]
 
@@ -57,9 +57,9 @@ Here is where the variables are unwrapped and passed on to the Java ode ßfuncti
     };
     
   
-   ExecFunc handles the call back function.
+   JavaOdeIntExamples.ExecFunc handles the call back function.
   
-    public class SodaBasic {
+    public class JavaOdeIntExamples.SodaBasic {
     
     
        [..]
@@ -73,7 +73,7 @@ Here is where the variables are unwrapped and passed on to the Java ode ßfuncti
             }
 lsoda_basic writes the results of each integration step into a stack
             
-            Pointer<Double> stack = PrintStack.create(start,end,delta, dimension);
+            Pointer<Double> stack = JavaOdeIntExamples.PrintStack.create(start,end,delta, dimension);
             CodepackLibrary.lsoda_basic(stack, qq,ff.f_func(),dimension,start, end, delta);[...]
           }
     
@@ -108,7 +108,7 @@ Typical out put:
 The output data can be found in the ./data sub-directoy.
 
 
-###Arenstorf orbits
+###JavaOdeIntExamples.Arenstorf orbits
 
 &mu;<sub>1</sub> = m<sub>1</sub>/(m<sub>1</sub> + m<sub>2</sub>)
 
@@ -124,7 +124,7 @@ D<sub>2</sub> = ((y<sub>1</sub>-&mu;<sub>2</sub>)^2 + y<sub>2</sub>^2)^(3/2)
 
 ![arenstorf orbit](/images/arenstorf-1.png)
 
-###VanderPol
+###JavaOdeIntExamples.VanderPol
 
 y'' - &mu; (1-y^2) &times; y' + y
 

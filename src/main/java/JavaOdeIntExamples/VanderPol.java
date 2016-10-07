@@ -1,4 +1,3 @@
-
 /*
  * https://opensource.org/licenses/BSD-3-Clause
  *
@@ -24,34 +23,44 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-import JavaOdeIntExamples.*;
-
-
-public class Main {
-
-    public static void main(String[] args) {
-
-        LogisticGrowthExample.run();
+package JavaOdeIntExamples;/**
+ * Created by fons on 9/15/16.
+ */
+public class VanderPol {
 
 
-        LorentzModel.run();
+    public static void run() {
+        double t0    =  0.0;
+        double tf    = 30.0;
+        double delta = 0.01;
+        int neq = 2;
 
-         //rigid body
-        RigidBody.run();
+        SodaBasic t1 = new SodaBasic(neq, new OdeFunc(neq) {
 
-         //arenstorf orbits
-        Arenstorf.run();
+            @Override
+            public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
+                double mu = params[0];
+                qdot[0] = q[1];
+                qdot[1] = mu * (1 - q[0]*q[0])*q[1] - q[0];
+            }});
+        double[] init   = new double[neq];
+        double[] params = new double[1];
 
-         //vanderpol
-        VanderPol.run();
+        init[0] = 2.0;
+        init[1] = 0.0;
 
-        SodarFullBouncingBall.run();
+        params[0] = 1.0;
+        t1.exec("soda-vanderpol-1.txt", params, init, t0, tf, delta);
 
-        SodarFullRossler.run();
+        params[0] = 10.0;
+        t1.exec("soda-vanderpol-2.txt", params, init, t0, tf, delta);
 
+        t0 = 0.0;
+        tf = 2000;
+        delta = 0.01;
+        params[0] = 1000.0;
+        t1.exec("soda-vanderpol-3.txt", params, init, t0, tf, delta);
 
-        System.out.println("Done; data in ./data/ directory..");
+        System.err.println("vander pol example data in ./data/soda-vanderpol-1/2/3.txt");
     }
-
 }

@@ -1,4 +1,3 @@
-
 /*
  * https://opensource.org/licenses/BSD-3-Clause
  *
@@ -24,34 +23,15 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package JavaOdeIntExamples;
 
-import JavaOdeIntExamples.*;
-
-
-public class Main {
-
-    public static void main(String[] args) {
-
-        LogisticGrowthExample.run();
+/**
+ * Created by fons on 10/5/16.
+ */
+public abstract class EventFunc {
 
 
-        LorentzModel.run();
-
-         //rigid body
-        RigidBody.run();
-
-         //arenstorf orbits
-        Arenstorf.run();
-
-         //vanderpol
-        VanderPol.run();
-
-        SodarFullBouncingBall.run();
-
-        SodarFullRossler.run();
-
-
-        System.out.println("Done; data in ./data/ directory..");
-    }
-
+        abstract public void apply(int dim, double t, double[] q, int ng, int[] jroot, double[] params);
+        private int dim = 1;
 }
+

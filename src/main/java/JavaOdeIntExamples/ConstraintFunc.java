@@ -1,4 +1,3 @@
-
 /*
  * https://opensource.org/licenses/BSD-3-Clause
  *
@@ -24,34 +23,24 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package JavaOdeIntExamples;
 
-import JavaOdeIntExamples.*;
+/**
+ * Created by fons on 10/3/16.
+ */
+public abstract class ConstraintFunc {
 
-
-public class Main {
-
-    public static void main(String[] args) {
-
-        LogisticGrowthExample.run();
-
-
-        LorentzModel.run();
-
-         //rigid body
-        RigidBody.run();
-
-         //arenstorf orbits
-        Arenstorf.run();
-
-         //vanderpol
-        VanderPol.run();
-
-        SodarFullBouncingBall.run();
-
-        SodarFullRossler.run();
-
-
-        System.out.println("Done; data in ./data/ directory..");
+    public ConstraintFunc(int d) {
+        dim = d;
     }
 
+    int dim() {
+        return dim;
+    }
+
+    abstract public void apply(int dim, double t, double[] q, int ng, double[] gout);
+
+    private int dim = 1;
+
 }
+

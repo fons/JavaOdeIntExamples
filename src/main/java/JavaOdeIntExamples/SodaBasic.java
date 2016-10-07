@@ -23,7 +23,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
+package JavaOdeIntExamples;/**
  * Created by fons on 9/12/16.
  */
 import com.kabouterlabs.jodeint.codepack.CodepackLibrary;
@@ -32,12 +32,12 @@ import org.bridj.Pointer;
 class ExecFunc {
     OdeFunc function;
     double[] params;
-    ExecFunc(OdeFunc f) {
-        function = f;
-    }
+    CodepackLibrary.codepack_ode_func f;
+    Pointer<CodepackLibrary.codepack_ode_func> fptr;
+    ExecFunc(OdeFunc fode) {
 
-    Pointer<CodepackLibrary.codepack_ode_func> f_func () {
-        CodepackLibrary.codepack_ode_func f = new CodepackLibrary.codepack_ode_func() {
+        function = fode;
+        f = new CodepackLibrary.codepack_ode_func() {
 
             @Override
             public void apply(Pointer<Integer> neq, Pointer<Double> t_, Pointer<Double> q, Pointer<Double> qdot) {
@@ -49,8 +49,10 @@ class ExecFunc {
 
             }
         };
-        return org.bridj.Pointer.getPointer(f);
+        fptr =  org.bridj.Pointer.getPointer(f);
     }
+
+    Pointer<CodepackLibrary.codepack_ode_func> f_func () {return fptr;}
 };
 
 public class SodaBasic {
@@ -60,7 +62,7 @@ public class SodaBasic {
     private int dimension;
     private ExecFunc ff;
 
-    SodaBasic(int d, OdeFunc func){
+    public  SodaBasic(int d, OdeFunc func){
         dimension = d;
         ff = new ExecFunc(func);
         double[] initial_conditions = new double[d];

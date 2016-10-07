@@ -23,7 +23,7 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
+package JavaOdeIntExamples;/**
  * Created by fons on 9/13/16.
  */
 public class LorentzModel {
@@ -51,7 +51,7 @@ public class LorentzModel {
         init[0] = 1.0;
         init[1] = 1.0;
         init[2] = 1.0;
-        t1.exec("sodar-lorenz.txt",init, t0, tf, delta);
-
+        t1.exec("soda-lorenz.txt",init, t0, tf, delta);
+        System.err.println("lorentz model example data in ./data/soda-lorentz-1.txt");
     }
 }

@@ -23,33 +23,44 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * Created by fons on 9/14/16.
- */
-public class RigidBody {
-    public static void run(){
-        double t0    =  0.0;
-        double tf    = 20.0;
-        double delta = 0.01;
-        int neq = 3;
+package JavaOdeIntExamples;
 
-        SodaBasic t1 = new SodaBasic(neq, new OdeFunc(neq) {
-            private double I1 = 0.5;
-            private double I2 = 2.0;
-            private double I3 = 3.0;
-            private double f0 = -2.0;//(I2 - I3)/I1;
-            private double f1 = 1.25; //(I3 - I1)/I2;
-            private double f2 = -0.5; //(I1 - I2)/I3;
+/**
+ * Created by fons on 10/6/16.
+ */
+public class SodarFullBouncingBall {
+
+    static public void run()
+    {
+
+        int neq = 2;
+        int nconstraints = 1;
+
+        Sodar t1 = new Sodar(new OdeFunc(neq) {
             @Override
             public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
-                qdot[0] = f0 * q[1] * q[2];
-                qdot[1] = f1 * q[0] * q[2];
-                qdot[2] = f2 * q[0] * q[1];
-            }});
-        double[] init = new double[neq];
-        init[0] = 1.0;
-        init[1] = 0.0;
-        init[2] = 0.9;
-        t1.exec("sodar-rigid-body.txt",init, t0, tf, delta);
+                qdot[0] = q[1];
+                qdot[1] = -9.81;
+            }
+        }, new ConstraintFunc(nconstraints) {
+            @Override
+            public void apply(int dim, double t, double[] y, int ng, double[] groot) {
+                groot[0] = y[0];
+            }
+        },
+                new EventFunc() {
+                    @Override
+                    public void apply(int dim, double t, double[] q, int ng, int[] jroot, double[] params) {
+                        q[0] = 0;
+                        q[1] = -0.9 *q[1];
+                    }
+                }
+        );
+        double[] init   = new double[neq];
+        init[0]   = 0.0;
+        init[1]   = 10;
+        t1.exec("sodar-full-ball-1.txt","sodar-full-ball-zero-1.txt",init, 0, 20, 0.01);
+        System.err.println("bouncing ball example data in ./data/sodar-full-ball-1.txt and zero's in ./data/sodar-full-ball-zero-1.txt");
     }
+
 }

@@ -23,52 +23,64 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package JavaOdeIntExamples;
+
+import org.bridj.Pointer;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+
+
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.Path;
 /**
- * Created by fons on 9/14/16.
+ * Created by fons on 8/30/16.
  */
-public class Arenstorf {
-    static public void run()
+public class PrintStack {
+
+
+    static  String path(String fn) {
+        String p = "./data/";
+        Path path = Paths.get(p);
+        if (Files.notExists(path)) {
+            try {
+                Files.createDirectories(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return File.separator + fn;
+            }
+        }
+        return p + File.separator + fn;
+    }
+    static Pointer<Double> create(double t0, double tf, double dt, int neq) {
+        int size = (int) ((tf - t0) / dt) + 1;
+        double[] p = new double[size * (neq + 1)];
+        return Pointer.pointerToDoubles(p);
+    }
+
+    static void print(Pointer<Double> stack, double t0, double tf, double dt, int neq, String fn)
     {
-        double t0    =  0.0;
-        double tf    = 20.0;
-        double delta = 0.01;
-        int neq = 4;
 
-        SodaBasic t1 = new SodaBasic(neq, new OdeFunc(neq) {
-            private double mu0 = 0.012277471;
-            private double mu1 = 1.0 - mu0;
-            @Override
-            public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
-                double d0 = (q[0] + mu0);
-                double D0f = (d0*d0 + q[1]*q[1]);
-                double D0 = Math.pow(D0f, 3.0/2.0);
+        int size = (int) ((tf - t0) / dt) + 1;
+        int stack_size = size * (neq + 1);
+        try {
+            PrintWriter writer1 = new PrintWriter(path(fn), "UTF-8");
+            double[] n = (double[]) stack.getArray();
+            for (int i = 0; i < stack_size; i++) {
+                writer1.print(n[i]);
+                writer1.print(",");
+                if ((i + 1) % (neq + 1) == 0) {
+                    writer1.println("");
+                }
+            }
 
-                double d1 = (q[0] - mu1);
-                double D1f = (d1*d1 + q[1]*q[1]);
-                double D1 = Math.pow(D1f, 3.0/2.0);
-                qdot[0] = q[2];
-                qdot[1] = q[3];
-                qdot[2] = q[0] + 2 * q[3] - mu1 * (q[0] + mu0) /D0 - mu0 * (q[0] - mu1)/D1;
-                qdot[3] = q[1] - 2 * q[2] - mu1 * q[1]/D0 - mu0 * q[1] /D1;
-            }});
-        double[] init = new double[neq];
-        init[0] = 0.994;
-        init[1] = 0.0;
-        init[2] = 0.0;
-        init[3] = -2.00158510637908252240537862224;
-        t1.exec("sodar-arenstorf-1.txt",init, t0, tf, delta);
+            writer1.close();
+        } catch (IOException e) {
+            e.printStackTrace();
 
-        init[0] = 0.994;
-        init[1] = 0.0;
-        init[2] = 0.0;
-        init[3] = -2.0317326295573368357302057924;
-        t1.exec("sodar-arenstorf-2.txt",init, t0, tf, delta);
-
-        init[0] = 1.2;
-        init[1] = 0.0;
-        init[2] = 0.0;
-        init[3] = -1.049357510;
-        t1.exec("sodar-arenstorf-3.txt",init, t0, tf, delta);
+        }
 
     }
 }

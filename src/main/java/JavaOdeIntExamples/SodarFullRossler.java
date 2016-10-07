@@ -23,16 +23,46 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package JavaOdeIntExamples;
+
 /**
- * Created by fons on 9/12/16.
+ * Created by fons on 10/6/16.
  */
-public abstract class OdeFunc {
-    OdeFunc(int d) {
-        dim = d;
+public class SodarFullRossler {
+    static public void run() {
+        int neq = 3;
+        int nconstraints = 2;
+
+        Sodar t1 = new Sodar(new OdeFunc(neq) {
+            @Override
+            public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
+                double a = params[0];
+                double b = params[1];
+                double c = params[2];
+                qdot[0] = -q[1] - q[2];
+                qdot[1] = q[0] + a * q[1];
+                qdot[2] = b + q[2]*(q[0] - c);
+            }
+        }, new ConstraintFunc(nconstraints) {
+            @Override
+            public void apply(int dim, double t, double[] y, int ng, double[] groot) {
+                groot[0] = y[0];
+                groot[1] = y[1];
+
+            }
+        }
+
+        );
+        double[] params = new double[3];
+        params[0] = 0.2;
+        params[1] = 0.2;
+        params[2] = 5.0;
+        double[] init   = new double[neq];
+        init[0]   = 1.0;
+        init[1]   = 1.0;
+        init[2]   = 1.0;
+        t1.exec("sodar-full-rossler-1.txt", "sodar-full-rossler-zero-1.txt",params,init, 0, 200, 0.01);
+        System.err.println("rossler equations example data in ./data/sodar-full-rossler-1.txt and zero's in ./data/sodar-full-rossler-zero-1.txt");
     }
-    int dim() {
-        return dim;
-    }
-    abstract void apply(int dim, double t, double[] q, double[] qdot, double[] params);
-    private int dim = 1;
 }
+

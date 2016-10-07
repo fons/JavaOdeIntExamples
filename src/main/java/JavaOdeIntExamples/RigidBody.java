@@ -1,4 +1,3 @@
-
 /*
  * https://opensource.org/licenses/BSD-3-Clause
  *
@@ -24,62 +23,33 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.bridj.Pointer;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-
-
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.Path;
-/**
- * Created by fons on 8/30/16.
+package JavaOdeIntExamples;/**
+ * Created by fons on 9/14/16.
  */
-public class PrintStack {
+public class RigidBody {
+    public static void run(){
+        double t0    =  0.0;
+        double tf    = 20.0;
+        double delta = 0.01;
+        int neq = 3;
 
-
-    static  String path(String fn) {
-        String p = "./data/";
-        Path path = Paths.get(p);
-        if (Files.notExists(path)) {
-            try {
-                Files.createDirectories(path);
-            } catch (IOException e) {
-                e.printStackTrace();
-                return File.separator + fn;
-            }
-        }
-        return p + File.separator + fn;
-    }
-    static Pointer<Double> create(double t0, double tf, double dt, int neq) {
-        int size = (int) ((tf - t0) / dt) + 1;
-        double[] p = new double[size * (neq + 1)];
-        return Pointer.pointerToDoubles(p);
-    }
-
-    static void print(Pointer<Double> stack, double t0, double tf, double dt, int neq, String fn)
-    {
-
-        int size = (int) ((tf - t0) / dt) + 1;
-        int stack_size = size * (neq + 1);
-        try {
-            PrintWriter writer1 = new PrintWriter(path(fn), "UTF-8");
-            double[] n = (double[]) stack.getArray();
-            for (int i = 0; i < stack_size; i++) {
-                writer1.print(n[i]);
-                writer1.print(",");
-                if ((i + 1) % (neq + 1) == 0) {
-                    writer1.println("");
-                }
-            }
-
-            writer1.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-
+        SodaBasic t1 = new SodaBasic(neq, new OdeFunc(neq) {
+            private double I1 = 0.5;
+            private double I2 = 2.0;
+            private double I3 = 3.0;
+            private double f0 = -2.0;//(I2 - I3)/I1;
+            private double f1 = 1.25; //(I3 - I1)/I2;
+            private double f2 = -0.5; //(I1 - I2)/I3;
+            @Override
+            public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
+                qdot[0] = f0 * q[1] * q[2];
+                qdot[1] = f1 * q[0] * q[2];
+                qdot[2] = f2 * q[0] * q[1];
+            }});
+        double[] init = new double[neq];
+        init[0] = 1.0;
+        init[1] = 0.0;
+        init[2] = 0.9;
+        t1.exec("sodar-rigid-body.txt",init, t0, tf, delta);
     }
 }
