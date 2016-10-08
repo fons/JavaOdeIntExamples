@@ -2,13 +2,44 @@
 
 Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) package.
 
-## Basic Interface
+#Building
 
-The basic interface is requires  smallest set of parameters to run the underlying Fortran function. It provides an easy way to start using the various ode packages.
+The java jar in ./src/main/resources needs to be installed in your local maven repository.
+Alternatively yo can run mvn install on JavaOdeInt.
 
-## Example : lsoda_basic
+mvn package
 
-lsoda_basic calls dlsoda, which is part of odepack. This routine switches automatically between stiff and -non-stiff methods and this makes it a great choice. 
+#Running
+
+java -jar ./target/JavaOdeIntExamples-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+Typical out put:
+
+ 
+    DLSODA-  At current T (=R1), MXSTEP (=I1) steps
+        taken on this call before reaching TOUT
+        In above message,  I1 =       500
+        In above message,  R1 =  0.8070798271313D+03
+    increased max steps to 2000 for retry 1
+    DLSODA-  At current T (=R1), MXSTEP (=I1) steps
+        taken on this call before reaching TOUT
+        In above message,  I1 =      2000
+        In above message,  R1 =  0.8070861736284D+03
+    increased max steps to 4000 for retry 1
+    
+
+
+The output data can be found in the ./data sub-directoy.
+
+# Basic Interface : lsoda_basic
+
+The basic interface only needs a few parameters. It provides an easy way to start using the various ode packages.
+
+lsoda_basic calls dlsoda, which is part of odepack. This routine switches automatically between stiff and -non-stiff methods and this makes it a great choice for a variety of problems.
+ 
+## Code Walk Through: [SodaBasic.java](JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/SodaBasic.java)
+
+[SodaBasic.java](JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/SodaBasic.java) provides and example on how to call the basic lsoda function.
 
 lsoda\_basic  can be found in the Java package _com.kabouterlabs.jodeint.codepack.CodepackLibrary_. The Java library uses [bridj](https://github.com/nativelibs4java/BridJ) to interface with a C libbary which implements the main integration loop. 
 
@@ -78,37 +109,11 @@ lsoda_basic writes the results of each integration step into a stack
           }
     
 
-#Building
+##Examples of Initial Value Problems solved using the basic solver.
 
-The java jar in ./src/main/resources needs to be installed in your local maven repository.
-Alternatively yo can run mvn install on JavaOdeInt.
+Below are examples of some of the problems solved using the basic solver.
 
-mvn package
-
-#Running
-
-java -jar ./target/JavaOdeIntExamples-1.0-SNAPSHOT-jar-with-dependencies.jar
-
-Typical out put:
-
- 
-    DLSODA-  At current T (=R1), MXSTEP (=I1) steps
-        taken on this call before reaching TOUT
-        In above message,  I1 =       500
-        In above message,  R1 =  0.8070798271313D+03
-    increased max steps to 2000 for retry 1
-    DLSODA-  At current T (=R1), MXSTEP (=I1) steps
-        taken on this call before reaching TOUT
-        In above message,  I1 =      2000
-        In above message,  R1 =  0.8070861736284D+03
-    increased max steps to 4000 for retry 1
-    
-
-
-The output data can be found in the ./data sub-directoy.
-
-
-###JavaOdeIntExamples.Arenstorf orbits
+###[Arenstorf orbits]( JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/Arenstorf.java)
 
 &mu;<sub>1</sub> = m<sub>1</sub>/(m<sub>1</sub> + m<sub>2</sub>)
 

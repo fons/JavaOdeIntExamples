@@ -1,4 +1,3 @@
-
 /*
  * https://opensource.org/licenses/BSD-3-Clause
  *
@@ -24,35 +23,31 @@
  * THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+package JavaOdeIntExamples;
 
-import JavaOdeIntExamples.*;
+/**
+ * Created by fons on 10/7/16.
+ */
+public class GniIrk2FullSimplePendulum {
+    public static void run() {
+        int neq = 1;
 
+        Gni_irk2 t1 = new Gni_irk2(new OdeFunc(neq) {
+            @Override
+            public void apply(int dim, double t, double[] q, double[] qdot, double[] params) {
+                double alpha = 1;
+                qdot[0] = -alpha * Math.sin(q[0]);
+            }
+        }
+        );
 
-public class Main {
+        double[] q = new double[1];
+        q[0] = Math.PI * 999 / 1000.0;
+        double[] qdot = new double[1];
+        qdot[0] = 0.0;
 
-    public static void main(String[] args) {
-        System.out.println("starting; data in ./data/ directory..");
-
-        LogisticGrowthExample.run();
-
-
-        LorentzModel.run();
-
-         //rigid body
-        RigidBody.run();
-
-         //arenstorf orbits
-        Arenstorf.run();
-
-         //vanderpol
-        VanderPol.run();
-
-        SodarFullBouncingBall.run();
-
-        SodarFullRossler.run();
-
-        GniIrk2FullSimplePendulum.run();
-        System.out.println("Done; data in ./data/ directory..");
+        t1.exec("gniirk2-full-pendulum-1.txt", q, qdot, 0, 100, 0.1);
+        System.err.println("gni irk2 equations example data in ./data/gniirk2-full-pendulum-1.txt");
     }
 
 }
