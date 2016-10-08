@@ -37,7 +37,7 @@ The basic interface only needs a few parameters. It provides an easy way to star
 
 lsoda_basic calls dlsoda, which is part of odepack. This routine switches automatically between stiff and -non-stiff methods and this makes it a great choice for a variety of problems.
  
-## Code Walk Through: [SodaBasic.java](JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/SodaBasic.java)
+## Code Walk Through: [SodaBasic.java](SodaBasic.java)
 
 [SodaBasic.java](JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/SodaBasic.java) provides and example on how to call the basic lsoda function.
 
@@ -113,7 +113,7 @@ lsoda_basic writes the results of each integration step into a stack
 
 Below are examples of some of the problems solved using the basic solver.
 
-###[Arenstorf orbits]( JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/Arenstorf.java)
+###[Arenstorf orbits](Arenstorf.java)
 
 &mu;<sub>1</sub> = m<sub>1</sub>/(m<sub>1</sub> + m<sub>2</sub>)
 
