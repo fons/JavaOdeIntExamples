@@ -5,13 +5,13 @@ Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) pack
 #Building
 
 The java jar in ./src/main/resources needs to be installed in your local maven repository.
-Alternatively yo can run mvn install on JavaOdeInt.
+Alternatively you can run mvn install on JavaOdeInt.
 
-mvn package
+    mvn package
 
 #Running
 
-java -jar ./target/JavaOdeIntExamples-1.0-SNAPSHOT-jar-with-dependencies.jar
+    java -jar ./target/JavaOdeIntExamples-1.0-SNAPSHOT-jar-with-dependencies.jar
 
 Typical out put:
 
@@ -31,15 +31,19 @@ Typical out put:
 
 The output data can be found in the ./data sub-directoy.
 
-# Basic Interface : lsoda_basic
+# Basic Interface : [SodaBasic.java](SodaBasic.java)
 
-The basic interface only needs a few parameters. It provides an easy way to start using the various ode packages.
 
-lsoda_basic calls dlsoda, which is part of odepack. This routine switches automatically between stiff and -non-stiff methods and this makes it a great choice for a variety of problems.
+
+The basic interface to the ode packages in JavaOdeInt needs very few parameters. It provides an easy way to start using the various ode packages.
+
+The implemenation uses lsoda_basic found in *com.kabouterlabs.jodeint.codepack.CodepackLibrary* in JavaOdeInt.
+
+lsoda_basic calls dlsoda, which is part of odepack. *dlsoda* switches automatically between stiff and -non-stiff methods and this makes it a great choice for a variety of problems.
  
-## Code Walk Through: [SodaBasic.java](SodaBasic.java)
+## Code Walk Through :[SodaBasic.java](SodaBasic.java)
 
-[SodaBasic.java](JavaOdeIntExamples/src/main/java/JavaOdeIntExamples/SodaBasic.java) provides and example on how to call the basic lsoda function.
+[SodaBasic.java](SodaBasic.java) provides and example on how to call the basic lsoda function.
 
 lsoda\_basic  can be found in the Java package _com.kabouterlabs.jodeint.codepack.CodepackLibrary_. The Java library uses [bridj](https://github.com/nativelibs4java/BridJ) to interface with a C libbary which implements the main integration loop. 
 
@@ -109,7 +113,7 @@ lsoda_basic writes the results of each integration step into a stack
           }
     
 
-##Examples of Initial Value Problems solved using the basic solver.
+#Examples of Initial Value Problems solved using the basic solver.
 
 Below are examples of some of the problems solved using the basic solver.
 
@@ -129,7 +133,7 @@ D<sub>2</sub> = ((y<sub>1</sub>-&mu;<sub>2</sub>)^2 + y<sub>2</sub>^2)^(3/2)
 
 ![arenstorf orbit](/images/arenstorf-1.png)
 
-###JavaOdeIntExamples.VanderPol
+###[Van der Pol](VanderPol.java)
 
 y'' - &mu; (1-y^2) &times; y' + y
 
@@ -137,7 +141,7 @@ The image below is showing solutions for &mu; = 1, 10 and 1000. For the latter v
 
 ![vanderpol ](/images/vanderpol.png)
 
-###Lorentz Attractor
+###[Lorentz Attractor](LorentzModel.java)
 X' = -8/3 &times; X + Y &times; Z
 
 Y' = -10 &times; (Y-Z)
