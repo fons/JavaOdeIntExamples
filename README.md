@@ -151,3 +151,246 @@ Z' = - X &times; Y + 28 &times; Y-Z
 Initial conditions : X=Y=Z=1
 
 ![lorentz 3d](/images/lorentz-3.png)
+
+#Full Interface : [Sodar.java](Sodar.java)
+
+JavaOdeInt provides access to the full interface of the Fortran functions. 
+The example below used dlsodar, which extends dlsoda with a root finder. This can be used to change the underlying ode function when certain events occur.
+
+## Code Walk Through of [Sodar.java](Sodar.java)
+
+
+### SodarExecFunc
+This class encapsulates the ode function call. It uses [bridj]() to marshall and unmarshall the data. 
+
+        class SodarExecFunc {
+        
+            OdeFunc function;
+            double[] params;
+            CodepackLibrary.dlsodar_f_callback f;
+            Pointer<CodepackLibrary.dlsodar_f_callback> fptr;
+            public SodarExecFunc(OdeFunc fode) {
+        
+                function = fode;
+                f = new CodepackLibrary.dlsodar_f_callback() {
+        
+                    @Override
+                    public void apply(Pointer<Integer> neq, Pointer<Double> t_, Pointer<Double> q, Pointer<Double> qdot) {
+                        double[] qdot_ = qdot.getDoubles(neq.getInt());
+                        double[] q_    = q.getDoubles(neq.getInt());
+                        function.apply(neq.getInt(), t_.get(),q_, qdot_, params);
+                        qdot.setDoubles(qdot_);
+                        q.setDoubles(q_);
+        
+                    }
+                };
+                fptr =   org.bridj.Pointer.getPointer(f);
+            }
+        
+            Pointer<CodepackLibrary.dlsodar_f_callback> f_func () {return fptr;}
+        };
+
+
+
+###SodarConstraintFunc
+This class encapsulates the constraint a.k.a root function. It does the data management using [bridj]().
+  
+
+        class SodarConstraintFunc {
+            ConstraintFunc function;
+            private CodepackLibrary.dlsodar_g_callback g;
+            private Pointer<CodepackLibrary.dlsodar_g_callback> gptr;
+            double[] params;
+            public SodarConstraintFunc(ConstraintFunc cf) {
+        
+                function = cf;
+                g = new CodepackLibrary.dlsodar_g_callback() {
+                    @Override
+                    public void apply(Pointer<Integer> neq, Pointer<Double> t_, Pointer<Double> y, Pointer<Integer> ng, Pointer<Double> gout) {
+                        double[] gout_ = gout.getDoubles(ng.get());
+                        double[] y_    = y.getDoubles(neq.get());
+                        function.apply(neq.getInt(), t_.get(),y_,ng.getInt(),gout_);
+                        gout.setDoubles(gout_);
+                        y.setDoubles(y_);
+                    }
+                };
+                gptr =  Pointer.getPointer(g);
+            }
+        
+            Pointer<CodepackLibrary.dlsodar_g_callback> g_func () {return gptr;}
+        
+        };
+
+### SodarEventFunc
+
+This class encapsulates the event function. The event function is called when a constraint a.k.a. root is found.
+
+ 
+        class SodarEventFunc {
+            EventFunc function;
+            double[] params;
+            public SodarEventFunc(EventFunc f){function = f;}
+            public void apply(Pointer<Integer> neq, Pointer<Double> t, Pointer<Double> y, Pointer<Integer> ng, Pointer<Integer> jroot) {
+                double[] y_ = y.getDoubles(neq.get());
+                function.apply(neq.get(), t.get(), y_, ng.get(), jroot.getInts(ng.get()), params);
+                y.setDoubles(y_);
+            }
+         }
+        
+###Sodar : Constructor
+
+Class Sodar has three constructors. One of those is shown below. Notice the large number of parameters that need to be initialized. The definition of these variables can be found in preamble of the fortran code.  Since C is sued as the glue, the integer values of te fortran code are mapped to C enums with a more descriptive name.
+
+Similarly the preamble defines the size of the work arrays rwork and iwork.
+
+        public class Sodar {
+            private SodarExecFunc ff;
+            private SodarConstraintFunc gg;
+            private SodarEventFunc ee;
+            private Pointer<Integer> neq;
+            private Pointer<Integer> ng;
+            private Pointer<Integer> itol = Pointer.pointerToInt((int) CodepackLibrary.codepack_itol_e.ALL_SCALAR.value);
+            private Pointer<Double>  atol = Pointer.pointerToDouble(10e-12);
+            private Pointer<Double>  rtol = Pointer.pointerToDouble(10e-12);
+            private Pointer<Integer> itask = Pointer.pointerToInt((int)CodepackLibrary.codepack_itask_e.NORMAL.value);
+            private Pointer<Integer>  istate = Pointer.pointerToInt((int)CodepackLibrary.codepack_istate_in_e.FIRST_CALL.value);
+            private Pointer<Integer>  iopt   = Pointer.pointerToInt((int)CodepackLibrary.codepack_iopt_e.NO_OPTIONAL_INPUTS.value);
+            private Pointer<Integer>  jt     = Pointer.pointerToInt((int)CodepackLibrary.codepack_jac_type_e.INTERNAL.value());
+            private Pointer<Integer> lrw;
+            private Pointer<Double>  rwork;
+            private Pointer<Integer> iwork;
+            private Pointer<Integer> liw;
+            private Pointer<Integer> jroot;
+            private Pointer<Double>  qq;
+            private double[] gout;
+            [...]
+               public Sodar(OdeFunc o_func, ConstraintFunc c_func) {
+        this(o_func);
+        ng  = Pointer.pointerToInt(c_func.dim());
+        gg = new SodarConstraintFunc(c_func);
+
+
+        int lrn = 20 + 16 * neq.getInt() + 3 * ng.getInt();
+        int lrs = 22 + 9 * neq.getInt() + neq.getInt()*neq.getInt() +  3 * ng.getInt();
+        if (lrn > lrs) {
+            lrw = Pointer.pointerToInt(lrn);
+        }
+        else {
+            lrw = Pointer.pointerToInt(lrs);
+        }
+        rwork = Pointer.allocateDoubles(lrw.get());
+        liw   = Pointer.pointerToInt(neq.get() + 20);
+        iwork = Pointer.allocateInts(liw.get());
+        jroot = Pointer.allocateInts(ng.get());
+        gout  = new double[ng.get()];
+        qq = Pointer.allocateDoubles(o_func.dim());
+        }
+        
+
+### Sodar : exec
+
+Sodar has various exec functions to call sodar. One of those is shown below.
+
+The integration takes place in a loop. Each iteration advances the independent variable with step delta. *istate* contains the return code of the Fortran function. When a root is found, the values of the dependent and independent variables as well as the reult of the root function are written to a file.
+
+    
+        public void exec(String fn, String zn, double[] init, double start, double end, double delta) {
+    
+            int index = 0;
+            for (Double value : init) {
+                qq.set(index, value);
+                index++;
+            }
+            Pointer<Double> tp       = Pointer.pointerToDouble(start);
+            try
+            {
+                FileWriter fstream = new FileWriter( PrintStack.path(fn), false); //true tells to append data.
+                BufferedWriter out = new BufferedWriter(fstream);
+                FileWriter fstreamz = new FileWriter( PrintStack.path(zn), false); //true tells to append data.
+                BufferedWriter outz = new BufferedWriter(fstreamz);
+                outz.write("~~roots found\n");
+                outz.write("index, root value, t,");
+                for (int j = 0; j < neq.get();j++) {
+                    outz.write("y" + ((Integer)j).toString()+",");
+                }
+                outz.write("\n");
+                while ( tp.get() < end) {
+                    Pointer<Double> tnextp = Pointer.pointerToDouble(tp.get()+delta);
+                    CodepackLibrary.dlsodar(ff.f_func(),neq,qq,tp,tnextp,itol,rtol,atol,itask,istate,iopt,rwork,lrw,iwork,liw,null,jt,gg.g_func(),ng,jroot);
+                    out.write(tp.get().toString() + ",");
+                    index = 0;
+                    while (index < neq.get())
+                    {
+                        out.write(qq.get(index).toString() + ",");
+                        index++;
+                    }
+                    out.write("\n");
+                    if (istate.get() == CodepackLibrary.codepack_istate_out_e.ROOT_FOUND.value) {
+                        gg.function.apply(neq.get(),tp.get(),qq.getDoubles(neq.get()),ng.get(),gout);
+                        for (index = 0; index < ng.get(); index++){
+                            if (jroot.get(index) == 1) {
+                                outz.write(((Integer)index).toString() + "," + ((Double)gout[index]).toString() + ","+tp.get().toString() + ",");
+                                for (int j = 0; j < neq.get();j++) {
+                                    outz.write( qq.get(j).toString()+",");
+                                }
+                                outz.write("\n");
+                            }
+                        }
+                        if (ee != null) {
+                            ee.apply(neq, tp, qq, ng, jroot);
+                            istate = Pointer.pointerToInt((int)CodepackLibrary.codepack_istate_in_e.FIRST_CALL.value);
+                        }
+                    }
+                }
+                out.close();
+                outz.close();
+    
+            }
+            catch (IOException e)
+            {
+                System.err.println("Error: " + e.getMessage());
+            }
+    
+    
+#Examples of Intial Value Problems solved using the full solver.
+
+## [Bouncing Ball](SodarFullBouncingBall.java)
+
+
+### ODE
+
+y'<sub>1</sub> = y<sub>2</sub>
+
+y<sub>2</sub>  = - 9.81
+
+### Initial Values
+
+y<sub>1</sub> = 0
+
+y<sub>2</sub> = 10
+
+### Root Function
+When the ball hits the floor, y<sub>1</sub> = 0
+
+        new ConstraintFunc(nconstraints) {
+                    @Override
+                    public void apply(int dim, double t, double[] y, int ng, double[] groot) {
+                        groot[0] = y[0];
+        }
+
+### Event Function 
+
+Reverse and reduce the velocity by 10 %
+
+
+        new EventFunc() {
+                            @Override
+                            public void apply(int dim, double t, double[] q, int ng, int[] jroot, double[] params) {
+                                q[0] = 0;
+                                q[1] = -0.9 *q[1];
+                            }
+        }
+
+
+![bouncing ball](/images/ball-1.png)
+
