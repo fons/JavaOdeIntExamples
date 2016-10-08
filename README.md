@@ -41,13 +41,13 @@ The implemenation uses lsoda_basic found in *com.kabouterlabs.jodeint.codepack.C
 
 lsoda_basic calls dlsoda, which is part of odepack. *dlsoda* switches automatically between stiff and -non-stiff methods and this makes it a great choice for a variety of problems.
  
-## Code Walk Through :[SodaBasic.java](SodaBasic.java)
+## Code Walk Through of [SodaBasic.java](SodaBasic.java)
 
 [SodaBasic.java](SodaBasic.java) provides and example on how to call the basic lsoda function.
 
-lsoda\_basic  can be found in the Java package _com.kabouterlabs.jodeint.codepack.CodepackLibrary_. The Java library uses [bridj](https://github.com/nativelibs4java/BridJ) to interface with a C libbary which implements the main integration loop. 
+lsoda\_basic  can be found in the Java package _com.kabouterlabs.jodeint.codepack.CodepackLibrary_. The Java library uses [bridj](https://github.com/nativelibs4java/BridJ) to interface with a C library which implements the main integration loop. 
 
-JavaOdeIntExamples.SodaBasic.java implements a simple class and portians are shown discussed below
+JavaOdeIntExamples.SodaBasic.java implements a simple class and portions are shown discussed below
 
 
 
