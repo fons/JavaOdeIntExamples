@@ -1,15 +1,15 @@
-#Overview
+# Overview
 
 Examples of the use of the [JavaOdeInt](https://github.com/fons/JavaOdeInt) package.
 
-#Building
+# Building
 
 The java jar in ./src/main/resources needs to be installed in your local maven repository.
 Alternatively you can run mvn install on JavaOdeInt.
 
     mvn package
 
-#Running
+# Running
 
     java -jar ./target/JavaOdeIntExamples-1.0-SNAPSHOT-jar-with-dependencies.jar
 
@@ -113,11 +113,11 @@ lsoda_basic writes the results of each integration step into a stack
           }
     
 
-#Examples of Initial Value Problems solved using the basic solver.
+# Examples of Initial Value Problems solved using the basic solver.
 
 Below are examples of some of the problems solved using the basic solver.
 
-###[Arenstorf orbits](Arenstorf.java)
+### [Arenstorf orbits](Arenstorf.java)
 
 &mu;<sub>1</sub> = m<sub>1</sub>/(m<sub>1</sub> + m<sub>2</sub>)
 
