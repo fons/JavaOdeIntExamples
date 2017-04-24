@@ -133,7 +133,7 @@ D<sub>2</sub> = ((y<sub>1</sub>-&mu;<sub>2</sub>)^2 + y<sub>2</sub>^2)^(3/2)
 
 ![arenstorf orbit](/images/arenstorf-1.png)
 
-###[Van der Pol](VanderPol.java)
+### [Van der Pol](VanderPol.java)
 
 y'' - &mu; (1-y^2) &times; y' + y
 
@@ -141,7 +141,7 @@ The image below is showing solutions for &mu; = 1, 10 and 1000. For the latter v
 
 ![vanderpol ](/images/vanderpol.png)
 
-###[Lorentz Attractor](LorentzModel.java)
+### [Lorentz Attractor](LorentzModel.java)
 X' = -8/3 &times; X + Y &times; Z
 
 Y' = -10 &times; (Y-Z)
@@ -152,7 +152,7 @@ Initial conditions : X=Y=Z=1
 
 ![lorentz 3d](/images/lorentz-3.png)
 
-#Full Interface : [Sodar.java](Sodar.java)
+# Full Interface : [Sodar.java](Sodar.java)
 
 JavaOdeInt provides access to the full interface of the Fortran functions. 
 The example below used dlsodar, which extends dlsoda with a root finder. This can be used to change the underlying ode function when certain events occur.
@@ -192,7 +192,7 @@ This class encapsulates the ode function call. It uses [bridj]() to marshall and
 
 
 
-###SodarConstraintFunc
+### SodarConstraintFunc
 This class encapsulates the constraint a.k.a root function. It does the data management using [bridj]().
   
 
@@ -237,7 +237,7 @@ This class encapsulates the event function. The event function is called when a 
             }
          }
         
-###Sodar : Constructor
+### Sodar : Constructor
 
 Class Sodar has three constructors. One of those is shown below. Notice the large number of parameters that need to be initialized. The definition of these variables can be found in preamble of the fortran code.  Since C is sued as the glue, the integer values of te fortran code are mapped to C enums with a more descriptive name.
 
@@ -352,7 +352,7 @@ The integration takes place in a loop. Each iteration advances the independent v
             }
     
     
-#Examples of Intial Value Problems solved using the full solver.
+# Examples of Intial Value Problems solved using the full solver.
 
 ## [Bouncing Ball](SodarFullBouncingBall.java)
 
